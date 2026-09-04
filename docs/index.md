@@ -1,6 +1,6 @@
 # Build your own cloud platform with Superphenix 
 
-![Superphenix](assets/SPX_black.svg){ .index-logo }
+![Superphenix](assets/spx.svg){ .index-logo }
 
 **Superphenix** (SPX) is an open-source, **cloud-native** project to build a **Cloud Service Provider (CSP)** on your own infrastructure using **Kubernetes**.
 

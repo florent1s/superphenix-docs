@@ -1,5 +1,5 @@
 [project]
-site_name = "Superphenix documentation"
+site_name = "Documentation"
 site_url = "https://docs.superphenix.net"
 site_description = "Build your own cloud platform with Superphenix"
 repo_url = "https://github.com/super-phenix/superphenix"
@@ -92,8 +92,8 @@ alternate_style = true
 [project.theme]
 # variant = "classic"
 custom_dir = "overrides"
-logo = "assets/SPX_black.svg"
-favicon = "assets/SPX_white.svg"
+logo = "assets/spx.svg"
+favicon = "assets/favicon.svg"
 features = ["announce.dismiss"]
 
 # Light/dark palette toggle (same as Material)
