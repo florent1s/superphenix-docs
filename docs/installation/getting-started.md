@@ -1,6 +1,6 @@
 # Getting started
 
-This lab uses a simple layout: **3 nodes**, one AZ, **hyperconverged**, management on the same cluster, one switch / flat VLAN.
+This guide will walk you through the steps to install a lab using the simplest layout: **3 nodes**, one AZ, **hyperconverged**, management on the same cluster, one switch / flat VLAN.
 
 Run every command from a **bootstrap host** that can reach the nodes (typically a laptop on that switch).
 

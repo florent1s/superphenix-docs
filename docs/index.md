@@ -10,11 +10,11 @@ It turns Kubernetes into a platform capable of handling **virtual machines, netw
 
 ## A few examples of what SPX has to offer
 
-- **Hypervisor**: VMs, live migration, snapshots, node autoscaling
-- **Storage**: Block, file and S3 storage with replication and disaster recovery
+- **Hypervisor**: VMs, live migration, snapshots, workload scheduling and loadbalancing
+- **Storage**: Block, file (TBD) and S3 storage with replication and disaster recovery
 - **Software-defined network**: VPCs, NAT gateways, BGP, load balancers, QoS, firewalling
 - **PaaS**: Kubernetes as a Service
-- **SaaS**: Databases, Harbor, Gitlab, Nextcloud
+- **SaaS**: Databases (Soon), Inference as a Service (Soon)
 - **GitOps**: Installs, upgrades, and resource provisioning via GitOps
 - **Web Console**: Multi-tenant console to manage multiple AZs from one place
 - **Backup and disaster recovery**: Cross-AZ mirroring, disk, VM and metadata backups, automated disaster recovery

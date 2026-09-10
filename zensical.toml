@@ -10,8 +10,7 @@ extra_css = ["stylesheets/extra.css"]
 copyright = "Copyright &copy; 2026 The Superphenix authors"
 
 nav = [
-  { "Home" = "index.md" },
-  { "Introduction" = "introduction.md" },
+  { "Home" = "home.md" },
   { "Architecture" = [
     { "Overview" = "architecture/index.md" },
     { "Deployment topology" = "architecture/deployment-topology.md" },

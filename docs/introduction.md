@@ -18,6 +18,16 @@ Superphenix focuses on all those layers to provide **high resiliency**, **high a
 
 To install a first cluster, see [Getting started](installation/getting-started.md). For complete and advanced deployment paths (all installation modes and operating patterns), see the [deployment guide](installation/deployment-guide/index.md).
 
+## Who is Superphenix for?
+
+Superphenix can be used for very different use cases:
+
+- **At scale**: For **actors willing to build their own cloud platform** across **multiple datacenters and regions**. Deploy several AZs, group them into regions, mirror data and backups between AZs, and operate everything from a single interface.
+- **Single datacenter**: Run one or more AZs in **one datacenter**. Ideal for MSPs, enterprises, or labs that want a full CSP stack without multi-site complexity.
+- **Single rack**: Superphenix can run in a **single rack** for small actors, labs, or even **at home**. Evaluate the stack, learn the platform, or host a small private cloud on minimal hardware.
+
+If your need is **independence** and **total control** of your infrastructure to do **SaaS, PaaS and IaaS**, Superphenix should cover most of your use cases. And if it doesn't, feel free to share why with us so we can improve the project!
+
 ## Summary of features
 
 Superphenix delivers a full cloud stack with the following capabilities:
@@ -43,16 +53,6 @@ Kubernetes is a container orchestrator, not a VM orchestrator. Using it as the c
 - **Expertise**: Teams that already run Kubernetes can operate the CSP stack with the same mindset
 
 The trade-off is adapting Kubernetes to VMs, storage, and CSP-style networking. Superphenix does that by combining a multitude of **open source projects** into one coherent, cloud-native platform.
-
-## Who is Superphenix for?
-
-Superphenix can be used for very different use cases:
-
-- **At scale**: For **actors willing to build their own cloud platform** across **multiple datacenters and regions**. Deploy several AZs, group them into regions, mirror data and backups between AZs, and operate everything from a single interface.
-- **Single datacenter**: Run one or more AZs in **one datacenter**. Ideal for MSPs, enterprises, or labs that want a full CSP stack without multi-site complexity.
-- **Single rack**: Superphenix can run in a **single rack** for small actors, labs, or even **at home**. Evaluate the stack, learn the platform, or host a small private cloud on minimal hardware.
-
-If your need is **independence** and **total control** of your infrastructure to do **SaaS, PaaS and IaaS**, Superphenix should cover most of your use cases. And if it doesn't, feel free to share why with us so we can improve the project!
 
 ## Do I need to know Kubernetes to install Superphenix?
 
