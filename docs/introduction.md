@@ -58,4 +58,7 @@ If your need is **independence** and **total control** of your infrastructure to
 
 Superphenix uses Kubernetes under the hood, but you **do not** need Kubernetes knowledge to install or run a standard deployment. 
 
-With that said, it isn't useless to be knowledgeable about Kubernetes. Operators who already know Kubernetes can go further: extending the platform, debugging issues, and operating Superphenix in more advanced ways.
+With that said, at this stage of the project, it isn't useless to be knowledgeable about Kubernetes. 
+Debugging Superphenix or doing advanced deployments requires knowledge of Kubernetes/Talos.
+
+We hope that in the future, we can abstract Kubernetes as much as possible.

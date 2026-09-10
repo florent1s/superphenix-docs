@@ -1,6 +1,6 @@
 # Getting started
 
-This path is a **fast lab**: **3 nodes**, one AZ, **hyperconverged**, management on the same cluster, one switch / flat VLAN.
+This lab uses a simple layout: **3 nodes**, one AZ, **hyperconverged**, management on the same cluster, one switch / flat VLAN.
 
 Run every command from a **bootstrap host** that can reach the nodes (typically a laptop on that switch).
 
