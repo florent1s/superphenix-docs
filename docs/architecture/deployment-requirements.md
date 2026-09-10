@@ -59,8 +59,8 @@ Use the **Minimal**, **Recommended**, and **Optimal** tabs below to compare tier
     | **CPU architecture** | **x86-64** with **Intel VT-x** or **AMD-V** enabled in firmware on hypervisor nodes |
     | **Disks (storage)** | ≥ **1** raw disk per node where storage services run; this can't be the boot disk |
     | **NIC / link speed** | **10 Gb/s** Ethernet |
-    | **Boot / OS** | Fast enterprise SSD acceptable |
-    | **Storage media** | **Enterprise** SSD or NVMe |
+    | **Boot / OS** | Fast consumer SSD acceptable |
+    | **Storage media** | **Enterprise** SSD/HDD or NVMe |
     | **MTU** | 1500 |
 
 === "Recommended"
