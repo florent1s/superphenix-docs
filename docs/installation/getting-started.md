@@ -1,85 +1,31 @@
 # Getting started
 
-We'll start with a small but production-shaped deployment. This guide targets a single AZ in **hyperconverged mode** using the minimal hardware profile (3 nodes), with the **management plane on the same cluster**.
+This path is a **fast lab**: **3 nodes**, one AZ, **hyperconverged**, management on the same cluster, one switch / flat VLAN.
 
-## Before you begin
+Run every command from a **bootstrap host** that can reach the nodes (typically a laptop on that switch).
 
-Run every command in this guide from a **bootstrap host** that can reach the nodes on the cluster network. For this lab, that is typically a laptop or jump host **connected to the same switch** as the three servers.
+## Prerequisites
 
-### Tools
+- **talosctl** ([CLI reference](https://www.talos.dev/latest/reference/cli/)), **Helm** ([install](https://helm.sh/docs/intro/install/)), and **kubectl**
+- **Talos 1.12.6 or older** — newer versions hit a Linux kernel bug that breaks the SDN. Superphenix is **only officially supported on Talos**.
+- An **IPv4 range on the network behind the external interface**. Superphenix picks addresses from that subnet at random and assigns them to **NAT gateways** and **elastic IPs**. If the subnet is shared with node addresses or other devices, those IPs can be excluded from the IPAM. Ideally, reserve the whole range (or a dedicated part of it) for Superphenix.
+- A **domain** for the console (and ArgoCD if you expose it). The cluster serves HTTP(S) on **every node** on ports **80** and **443**, so DNS only needs to point at **one** node. For HA, use a load balancer or DNS round-robin.
 
-Install these on the bootstrap host:
+    !!! tip "No DNS?"
+        Use **[nip.io](https://nip.io)** against an internal node IP, for example `console.192.168.1.10.nip.io`.
 
-- **talosctl** — required to generate configs, apply them, and bootstrap the cluster ([talosctl CLI reference](https://www.talos.dev/latest/reference/cli/))
-- **Helm** — required to install the `superphenix-operator` chart ([Helm install](https://helm.sh/docs/intro/install/))
-- **kubectl** (recommended) and **k9s** (optional) — useful to inspect the cluster and debug if something goes wrong
+## 1. Install Talos
 
-### Domain names
+Boot the nodes with the [Talos getting started](https://talos.dev/v1.11/introduction/getting-started) guide, then generate configs:
 
-A **domain name** is required to expose:
+```bash
+talosctl gen config spx-local https://<api-endpoint>:6443
+```
 
-- The **web console**
-- **ArgoCD**, if you expose it
-- Services such as Kubernetes control planes, databases, and similar HTTP(S) endpoints
-
-The cluster listens on **every node** on ports **80** and **443**. DNS only needs to point at **one** node. In a high-availability setup, put a **load balancer** in front of the nodes or use **DNS round-robin**.
-
-If you do not have DNS, a wildcard service such as **[nip.io](https://nip.io)** can map a name to the cluster’s internal IP. Use that for labs that are not reachable from the internet.
-
-### Planning
-
-Review architecture planning documents so topology and infrastructure constraints are clear up front:
-
-- [Architecture overview](../architecture/index.md)
-- [Deployment topology](../architecture/deployment-topology.md)
-- [Hardware requirements](../architecture/deployment-requirements.md)
-- [Network requirements](../architecture/network-requirements.md)
-
-For complete and advanced deployment paths, see the [deployment guide](deployment-guide/index.md).
-For production-oriented configuration and performance guidance, see [Production recommendations](production-recommendations.md).
-
-!!! warning "Official support scope"
-    Superphenix can technically run on any conformant Kubernetes cluster, but we **officially support Talos**. Current default values and operational assumptions are tuned for Talos-based clusters.
-
-## Reference lab setup
-
-Use this baseline for a first deployment:
-
-- **Topology**: Single AZ, hyperconverged
-- **Management**: On the same cluster (`connection.mode: Local`)
-- **Nodes**: 3 control-plane nodes (minimal specs)
-- **Network**: Flat VLAN on a single switch
-
-## Install Talos
-
-!!! warning "Maximum supported Talos version"
-    The maximum supported Talos version is **1.12.6**. Do not install a newer release.
-    This is due to a Linux kernel bug affecting the SDN.
-
-### Bootstrap Kubernetes
-
-Quick reference:
-
-- Generate cluster config:
-  `talosctl gen config spx-local https://<api-endpoint>:6443`
-- Apply machine configs to each node:
-  `talosctl apply-config --insecure --nodes <node-ip> --file controlplane.yaml`
-- Bootstrap etcd once from one control-plane node:
-  `talosctl bootstrap --nodes <first-control-plane-ip>`
-
-Official references:
-
-- [Talos Getting Started](https://talos.dev/v1.11/introduction/getting-started)
-- [talosctl CLI reference](https://www.talos.dev/latest/reference/cli/)
-
-### Required Talos configuration
-
-Add the following under `machine:` on **every** node before you apply the configs. It enables CDI device ownership for KubeVirt and loads the Open vSwitch kernel module used by Kube-OVN:
+Edit `controlplane.yaml` **before** you apply it. Superphenix installs the CNI and CoreDNS itself; this 3-node lab also schedules workloads on the control planes.
 
 ```yaml
 machine:
-  # Static file to override the containerd config
-  # https://github.com/kubevirt/containerized-data-importer/issues/2378#issuecomment-1297007860
   files:
     - content: |
         [plugins]
@@ -89,89 +35,64 @@ machine:
             device_ownership_from_security_context = true
       path: /etc/cri/conf.d/20-customization.part
       op: create
-
   kernel:
     modules:
       - name: openvswitch
-```
-
-Also set the following under `cluster:` in the generated configs. Superphenix installs the CNI and CoreDNS itself (via ArgoCD), and this 3-node lab schedules workloads on the control planes:
-
-```yaml
-cluster:
-  # Control plane nodes also handle running normal workloads (this is a small cluster)
-  allowSchedulingOnControlPlanes: true
-
-  network:
-    # The CNI is installed by Superphenix
-    cni:
-      name: none
-
-  # CoreDNS is installed by Superphenix
-  coreDNS:
-    disabled: true
-```
-
-### External interface name
-
-The interface that connects the cluster to the exterior must have the **same name on every node**. Superphenix refers to that name cluster-wide. It can be a **physical NIC**, a **bond**, or a **VLAN**.
-
-If the kernel names differ between nodes, add a **link alias** so every node exposes the same name. Append a `LinkAliasConfig` document to each node's machine configuration. Match the NIC by MAC address, and use the same alias on every node:
-
-```yaml
----
-apiVersion: v1alpha1
-kind: LinkAliasConfig
-name: ext0
-selector:
-  match: mac(link.permanent_addr) == "00:1a:2b:3c:4d:5e" # this node's NIC MAC
-```
-
-Pick an alias that does not look like a kernel name (`eth0`, `ens3`, `enp0s31f6`, …), or it may conflict with a real interface. Change only the MAC per node; keep `name: ext0` identical.
-
-Bonds and VLANs are named when you define them, so give them the same `interface` name on every node instead of an alias. Talos can alias **physical** links only.
-
-### DHCP and default gateway
-
-If node addresses come from DHCP, enable DHCP explicitly on each interface in the Talos machine configuration, and **set a default gateway on every node**. Without a default gateway, Kube-OVN can fail and break cluster connectivity.
-
-```yaml
-machine:
   network:
     interfaces:
-      - interface: eth0 # replace with your interface name
+      - interface: ext0 # same name on every node (NIC, bond, or VLAN)
         dhcp: true
         routes:
           - network: 0.0.0.0/0
             gateway: 192.168.1.1 # your lab default gateway
+
+cluster:
+  allowSchedulingOnControlPlanes: true
+  network:
+    cni:
+      name: none
+  coreDNS:
+    disabled: true
 ```
 
-Apply the same pattern (with the correct gateway) on all three nodes.
+???+ warning "Same external interface name on every node"
+    The **external** interface must have the **same name on every node** (`ext0` here). Superphenix uses that name cluster-wide. If kernel names differ, append a `LinkAliasConfig` per node (physical NICs only; name bonds and VLANs yourself). Keep `name: ext0` identical; change only the MAC:
 
-## Install the operator
+    ```yaml
+    ---
+    apiVersion: v1alpha1
+    kind: LinkAliasConfig
+    name: ext0
+    selector:
+      match: mac(link.permanent_addr) == "00:1a:2b:3c:4d:5e" # this node's NIC MAC
+    ```
 
-Create a values file (for example `values.yaml`) that installs the operator on this cluster, configures the management stack, and declares a **hyperconverged** `Cluster` with `connection.mode: Local` so Superphenix runs on the same Kubernetes cluster that hosts the operator.
+    Do not use kernel-style alias names (`eth0`, `ens3`, `enp0s31f6`, …).
 
-Full chart reference: [superphenix-operator `values.yaml`](https://github.com/super-phenix/superphenix/blob/main/components/system/superphenix-operator/values.yaml).  
-System / Kube-OVN defaults: [superphenix-system `values.yaml`](https://github.com/super-phenix/superphenix/blob/main/components/system/superphenix-system/values.yaml).
+Apply, bootstrap once, then confirm nodes are up:
 
-### Example values file
+```bash
+talosctl apply-config --insecure --nodes <node-ip> --file controlplane.yaml
+talosctl bootstrap --nodes <first-control-plane-ip>
+talosctl kubeconfig .
+kubectl get nodes
+```
+
+## 2. Install Superphenix
+
+Create `values.yaml`. Replace domains, node IPs, the external subnet, and `ext0`.
 
 ```yaml
-# Required while bootstrapping: the Talos cluster has no CNI until Superphenix
-# installs Kube-OVN. Set back to false after the stack is healthy.
+# Required until Superphenix has installed Kube-OVN. Set back to false after the stack is healthy.
 installOnClusterWithoutCNI: true
 
-# ArgoCD config to debug and see the deployments live
-# Not required, but always useful to have
 config:
   argocd:
     values:
       server:
         ingress:
-          hostname: "argocd.example.org" # For internal IPs: argocd.192.168.1.10.nip.io
+          hostname: "argocd.example.org" # or argocd.192.168.1.10.nip.io
 
-# Management stack configuration (including the console)
 management:
   manual: true
   systemConfiguration:
@@ -181,11 +102,8 @@ management:
           globalSecret: "a-very-long-string-you-need-to-change"
       superphenix-console:
         values:
-          # The domain on which the console will be hosted
-          # For internal IPs: argocd.192.168.1.10.nip.io
-          domain: console.example.org
+          domain: console.example.org # or console.192.168.1.10.nip.io
 
-# Hyperconverged AZ on the same cluster (Local connection).
 clusters:
   local:
     deploymentTopology: Hyperconverged
@@ -198,20 +116,26 @@ clusters:
         misc:
           values:
             objects:
+              # Replace the CIDR, gateway and the IPs excluded from
+              # being used by the NAT gateways and elastic IPs.
               external-subnet:
                 spec:
                   protocol: IPv4
                   cidrBlock: 192.168.1.0/24
                   gateway: 192.168.1.254
+                  # Those are the IPs you want excluded from the Superphenix IPAM
+                  # You can set individual IPs, or ranges using the ".." separator
                   excludeIps:
                     - 192.168.1.0..192.168.1.200
                     - 192.168.1.254
               external-subnet-nad:
                 spec:
+                  # Replace ext0 with the external interface 
+                  # name common to all your nodes
                   config: '{
                       "cniVersion": "0.3.0",
                       "type": "macvlan",
-                      "master": "ext0", # Put the name of your external interface here
+                      "master": "ext0",
                       "mode": "bridge",
                       "ipam": {
                         "type": "kube-ovn",
@@ -221,60 +145,53 @@ clusters:
                     }'
         kubeovn:
           values:
-            masterNodes: MASTER_1,MASTER_2,MASTER_3 # 192.168.1.150,192.168.1.151,192.168.1.153
+            # Replace with the IPs of your 3 masters here
+            masterNodes: "192.168.1.150,192.168.1.151,192.168.1.153"
 ```
 
-### Install with Helm
-
+Install the **superphenix-operator** on the Talos cluster using Helm:
 ```bash
 helm install superphenix-operator \
   ghcr.io/super-phenix/charts/superphenix-operator \
+  --version 0.7.0 \
   --namespace superphenix-system \
   --create-namespace \
   -f values.yaml
 ```
 
-### Avoid CIDR conflicts with Kube-OVN
+When the stack is healthy, open the console at your domain.
 
-The node CIDR (the subnet of your Talos node IPs) must **not** overlap Kube-OVN networks from the system chart defaults:
+???+ note "Override Kube-OVN CIDRs"
+    If your **node subnet overlaps** Kube-OVN defaults (pods `10.0.0.0/12`, services `10.16.0.0/12`, join `100.64.0.0/12`, isolated egress `10.32.0.0/16`), pick a different  node range or override `clusters.local.systemConfiguration.apps.kubeovn.values.networking`. A `192.168.1.0/24` lab does not conflict.
 
-| Network | Default (IPv4) | Default (IPv6) | Purpose |
-|---------|----------------|----------------|---------|
-| Pods | `10.0.0.0/12` | `fd00:100:0000:0::/96` | Pod overlay |
-| Services | `10.16.0.0/12` | `fd00:100:ffff:0::/112` | ClusterIP services |
-| Join | `100.64.0.0/12` | `fd00:100:64::/112` | Kube-OVN join network |
-| Isolated egress | `10.32.0.0/16` | `fd00:110::/64` | System egress subnet |
+    Example when nodes are on `10.1.0.0/24` (inside the default pod range `10.0.0.0/12`):
 
-Prefer choosing a node subnet that does not collide with those defaults. If you must keep an existing lab addressing plan that conflicts, override the CIDRs under `systemConfiguration.apps.kubeovn.helm.values` (IPv4, IPv6, or both).
+    ```yaml
+    clusters:
+      local:
+        systemConfiguration:
+          apps:
+            kubeovn:
+              values:
+                masterNodes: "10.1.0.11,10.1.0.12,10.1.0.13"
+                networking:
+                  pods:
+                    cidr:
+                      v4: "10.128.0.0/12"
+                      v6: "fd00:200:0000:0::/96"
+                    gateways:
+                      v4: "10.128.0.1"
+                      v6: "fd00:200:0000:0::1"
+                  services:
+                    cidr:
+                      v4: "10.144.0.0/12"
+                      v6: "fd00:200:ffff:0::/112"
+                  join:
+                    cidr:
+                      v4: "100.64.0.0/12"
+                      v6: "fd00:200:64::/112"
+    ```
 
-Example when nodes are on `10.1.0.0/24` (inside the default pod range `10.0.0.0/12`):
+Full chart values: [superphenix-operator](https://github.com/super-phenix/superphenix/blob/main/components/system/superphenix-operator/values.yaml), [superphenix-system](https://github.com/super-phenix/superphenix/blob/main/components/system/superphenix-system/values.yaml).
 
-```yaml
-clusters:
-  cluster-local:
-    # ... same fields as above ...
-    systemConfiguration:
-      apps:
-        kubeovn:
-          values:
-            masterNodes: "10.1.0.11,10.1.0.12,10.1.0.13"
-            networking:
-              pods:
-                cidr:
-                  v4: "10.128.0.0/12"
-                  v6: "fd00:200:0000:0::/96"
-                gateways:
-                  v4: "10.128.0.1"
-                  v6: "fd00:200:0000:0::1"
-              services:
-                cidr:
-                  v4: "10.144.0.0/12"
-                  v6: "fd00:200:ffff:0::/112"
-              join:
-                cidr:
-                  v4: "100.64.0.0/12"
-                  v6: "fd00:200:64::/112"
-            # Isolated egress lives under extraObjects in the system chart;
-            # only change it if your node CIDR also conflicts with
-            # 10.32.0.0/16 or fd00:110::/64.
-```
+For other topologies and production sizing, see the [Deployment guide](deployment-guide/index.md) and [Production recommendations](production-recommendations.md).
