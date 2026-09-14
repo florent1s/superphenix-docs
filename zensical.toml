@@ -45,7 +45,14 @@ nav = [
   { "Features" = [
     { "Overview" = "features/index.md" },
     { "Compute" = "features/compute/index.md" },
-    { "Network" = "features/network/index.md" },
+    { "Network" = [
+      { "Overview" = "features/network/index.md" },
+      { "VPC" = "features/network/vpc.md" },
+      { "Subnet" = "features/network/subnet.md" },
+      { "EIP" = "features/network/eip.md" },
+      { "Load Balancer" = "features/network/load-balancer.md" },
+      { "Security Group" = "features/network/security-group/index.md" },
+    ]},
     { "Storage" = "features/storage/index.md" },
   ]},
   { "User Guides" = [
