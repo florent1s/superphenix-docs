@@ -64,7 +64,7 @@ nav = [
   ]},
   { "PaaS" = [
     { "KaaS" = [
-      { "Basic operations" = "paas/kaas/basics.md" },
+      { "Basic operations" = "paas/kaas/basic-operations.md" },
       { "Advanced configuration" = "paas/kaas/advanced-configuration.md" },
       { "Disaster recovery" = "paas/kaas/disaster-recovery.md" },
       { "Network configuration" = "paas/kaas/network-configuration.md" }

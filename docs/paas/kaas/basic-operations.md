@@ -9,8 +9,8 @@ This section details the most common actions regarding Kubernetes clusters on Su
     Therefore, make sure that your subnet has internet access when creating a cluster.
     This can be achieved by creating an EIP with the SNAT option enabled and attaching it to your subnet.
 
-To deploy a cluster through the console, follow the steps of the creation wizard *(Check the `Console` tab below for a complete walktrough)*.
-For a GitOps deployment, you can copy and adjust the example below (`GitOps` tab) based on your needs.
+To deploy a cluster through the console, follow the steps of the creation wizard
+For a GitOps deployment, you can copy and adjust the example below based on your needs. Below is a complete walkthrough for both deployment methods:
 
 === "Console"
 
@@ -86,19 +86,19 @@ Steps to add nodes to your cluster:
 
 === "GitOps"
 
-    1. Increase `.<cluster-name>.workers.instances.<node-group>.deployment.replicas`.
+    1. Increase `<cluster-name>.workers.instances.<node-group>.deployment.replicas`.
     2. Commit and push the changes.
     3. Go to the your project's page on the selfservice ArgoCD and synchronize the changes.
 
-    You can also create a new worker pool by adding its specification under `<cluster-name>.workers.instances` like in this minimal example:
+    You can also create a new worker pool by adding its specification under `<cluster-name>.workers.instances` like in this example:
     ```yaml
     node-group-2:
       deployment:
         replicas: 2
       template:
         version: 1
-        cores: 4
-        memory: 12Gi
+        cores: 2
+        memory: 4Gi
         interfaces:
           - subnet: "<my-subnet>"
         bootDisk:
@@ -123,6 +123,24 @@ Steps to increase the size of nodes in an existing node group. This will trigger
     3. Commit and push the changes.
     4. Go to the your project's page on the selfservice ArgoCD and synchronize the changes.
 
+    ???+ tip "Rolling update configuration"
+        You can control how the rolling update process behaves by setting `<cluster-name>.workers.instances.<node-group>.template.maxSurge` and `.maxUnavailable`.
+
+    Example:
+    ```yaml
+    node-group-1:
+      deployment:
+        replicas: 2
+      template:
+        version: 2 # <-- Increment to trigger node rolling update
+        cores: 4
+        memory: 12Gi
+        interfaces:
+          - subnet: "<my-subnet>"
+        bootDisk:
+          storage: 30Gi
+    ```
+
 ## Upgrading a cluster
 
 To upgrade your cluster, follow these steps to trigger a controlplane upgrade. Once it is done the worker VMs will undergo a rolling update.
@@ -138,6 +156,9 @@ To upgrade your cluster, follow these steps to trigger a controlplane upgrade. O
     1. Change `<cluster-name>.kubeVersion` to the desired version.
     2. Commit and push the changes.
     3. Go to the your project's page on the selfservice ArgoCD and synchronize the changes.
+
+    ???+ tip "Rolling update configuration"
+        You can control how the rolling update process behaves by setting `<cluster-name>.workers.instances.<node-group>.template.maxSurge` and `.maxUnavailable`.
 
 ## Deleting a cluster
 
