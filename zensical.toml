@@ -44,10 +44,9 @@ nav = [
   ]},
   { "Features" = [
     { "Overview" = "features/index.md" },
-    { "Tenancy & console" = "features/tenancy-and-console.md" },
-    { "Virtualization" = "features/virtualization.md" },
-    { "Network" = "features/network.md" },
-    { "Storage" = "features/storage.md" }
+    { "Compute" = "features/compute/index.md" },
+    { "Network" = "features/network/index.md" },
+    { "Storage" = "features/storage/index.md" },
   ]},
   { "User Guides" = [
     { "Network" = [

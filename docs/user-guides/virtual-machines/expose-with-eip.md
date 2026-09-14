@@ -19,15 +19,15 @@ To check an existing subnet, open its details page. A subnet with a gateway show
 
 1. On the subnet details page, open **Options** and click **Attach EIP**. The EIP wizard opens with the AZ and subnet already selected. You can also start from **Network → EIP → Create an EIP** and pick the subnet yourself.
 
-    ![Subnet Options menu with Attach EIP](../../assets/screenshots/virtual-machines/subnet-attach-eip.png)
+   ![Subnet Options menu with Attach EIP](../../assets/screenshots/virtual-machines/subnet-attach-eip.png)
 
 2. Enter a **Name**, for example `docs-demo-eip`, and click **Next**.
 
-    ![EIP wizard step 1 with name and subnet](../../assets/screenshots/virtual-machines/create-eip-general.png)
+   ![EIP wizard step 1 with name and subnet](../../assets/screenshots/virtual-machines/create-eip-general.png)
 
 3. Keep **EIP Type** on **Internal IP** and enter the VM's **Assigned IP** in **Internal IP**.
 
-    ![EIP wizard step 2 in Internal IP mode](../../assets/screenshots/virtual-machines/create-eip-internal-ip.png)
+   ![EIP wizard step 2 in Internal IP mode](../../assets/screenshots/virtual-machines/create-eip-internal-ip.png)
 
 4. Click **Create**.
 
@@ -71,5 +71,5 @@ Without DNAT rules, an Internal CIDR EIP opens no inbound port.
 ## Notes
 
 - One NAT gateway serves one subnet. Two VMs on the same subnet can each have their own EIP.
-- Security groups apply on top of the EIP. When no security group targets the VM, all traffic passes. See [Create a security group](../network/create-a-security-group.md) to filter it, and [Network](../../features/network.md) for the concepts.
+- Security groups apply on top of the EIP. When no security group targets the VM, all traffic passes. See [Create a security group](../network/create-a-security-group.md) to filter it, and [Network](../../features/network/index.md) for the concepts.
 - Deleting the EIP releases the public address. The VM keeps its private IP and stays up.
