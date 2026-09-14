@@ -54,9 +54,9 @@ The trade-off is adapting Kubernetes to VMs, storage, and CSP-style networking. 
 
 ## Do I need to know Kubernetes?
 
-You **do not** need extensive Kubernetes knowledge to install or run a standard deployment. Superphenix uses Kubernetes under the hood.
+You **do not** need extensive Kubernetes knowledge to use Superphenix. But you **do need** Kubernetes/Talos knowledge to install and operate Superphenix.
 
-At this stage of the project, Kubernetes experience still helps a lot. Debugging Superphenix or doing advanced deployments requires knowledge of Kubernetes and Talos.
+At this stage of the project, Kubernetes experience is still necessary. Debugging Superphenix or doing advanced deployments requires knowledge of Kubernetes and Talos.
 
 We hope that in the future, we can abstract Kubernetes as much as possible.
 

@@ -22,7 +22,7 @@ After creation you can change many aspects of a running VM from the console or G
 | **CPU / memory** | Resize compute **hot** or with a short restart, per platform policy. |
 | **Network interfaces** | Add interfaces **one per subnet** (each NIC sits on a single subnet). Per interface: **static** IP, **DHCP / IPAM**-allocated address, **IPv4**, **IPv6**, or **dual stack** as the subnet allows. |
 | **Volumes** | Attach/detach **disks**, attach **CD-ROM** (ISO) devices, and **cloud-init** configuration disks where supported. |
-| **Access** | Inject **SSH keys** (via [SSH key store](tooling.md)), edit **cloud-init** user data, open **serial** or **VNC** console. |
+| **Access** | Inject **SSH keys**, edit **cloud-init** user data, open **serial** or **VNC** console. |
 | **Mobility** | **Live migration** between hypervisor nodes (where the scheduler and storage policy allow). |
 
 ### Create an instance

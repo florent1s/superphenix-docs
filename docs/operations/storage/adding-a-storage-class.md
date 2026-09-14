@@ -158,7 +158,7 @@ Add the block storage class under `systemConfiguration` on the `Cluster` resourc
         values:
           clusters:
             - name: "[cluster-name]" # Can be the name of your hyperconverged cluster
-              pools:
+              blockPools:
                 # Name must match an existing storage pool. If you're creating a storage class for an erasure
                 # coded pool, you need to specify the name of the metadata pool here. If you followed the previous
                 # steps to add an EC pool, the name of the metadata pool will be [pool name]-metadata.
@@ -215,7 +215,7 @@ Add the block storage class under `systemConfiguration` on the `Cluster` resourc
               healthCheck:
                 username: "client.csi-health"
                 token: ""
-              pools:
+              blockPools:
                 # Name must match an existing storage pool. If you're creating a storage class for an erasure
                 # coded pool, you need to specify the name of the metadata pool here. If you followed the previous
                 # steps to add an EC pool, the name of the metadata pool will be [pool name]-metadata.

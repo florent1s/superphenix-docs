@@ -47,19 +47,32 @@ nav = [
     { "Tenancy & console" = "features/tenancy-and-console.md" },
     { "Virtualization" = "features/virtualization.md" },
     { "Network" = "features/network.md" },
-    { "Storage" = "features/storage.md" },
-    { "Tooling" = "features/tooling.md" },
-    { "PaaS" = "features/paas.md" },
-    { "SaaS" = "features/saas.md" }
+    { "Storage" = "features/storage.md" }
+  ]},
+  { "User Guides" = [
+    { "Network" = [
+      { "Create a subnet with a NAT gateway" = "user-guides/network/create-a-subnet.md" }
+    ]},
+    { "Virtual machines" = [
+      { "Overview" = "user-guides/virtual-machines/index.md" },
+      { "Create a virtual machine" = "user-guides/virtual-machines/create-a-vm.md" },
+      { "Expose a VM with an Elastic IP" = "user-guides/virtual-machines/expose-with-eip.md" }
+    ]}
   ]},
   { "Operations" = [
+    { "Network" = [
+      { "Configure NAT gateways" = "operations/network/configure-nat-gateways.md" },
+      { "Setting the MTU of subnets" = "operations/network/setting-the-mtu-of-subnets.md" },
+      { "IPv6 configuration" = "operations/network/ipv6-configuration.md" },
+      { "Hairpin NAT" = "operations/network/hairpin-nat.md" }
+    ]},
     { "Storage" = [
       { "Configuring the storage cluster" = "operations/storage/configuring-the-storage-cluster.md" },
       { "Connecting a workload and storage cluster" = "operations/storage/connecting-a-workload-and-storage-cluster.md" },
       { "Adding a storage class" = "operations/storage/adding-a-storage-class.md" },
-      { "Adding an object store" = "operations/storage/adding-an-object-store.md" }
+      { "Adding an object store" = "operations/storage/adding-an-object-store.md" },
+      { "Using local storage" = "operations/storage/using-local-storage.md" }
     ]},
-    { "Testing" = "operations/testing.md" },
     { "Web console" = "operations/console.md" }
   ]},
   { "PaaS" = [

@@ -33,7 +33,7 @@ Production workloads need predictable latency and headroom for failure and recov
 
 **Storage (Ceph)**
 
-- Use **datacenter- or enterprise-grade** SSDs and NVMe for Ceph OSDs. **Consumer SSDs** are a poor fit: Ceph is sensitive to write latency and endurance, and performance can **degrade sharply** under sustained or mixed workloads (see [Hardware requirements](../architecture/deployment-requirements.md)).
+- Use **datacenter or enterprise-grade** SSDs and NVMe for Ceph OSDs. **Consumer SSDs** are a poor fit: Ceph is sensitive to write latency and endurance, and performance can **degrade sharply** under sustained or mixed workloads (see [Hardware requirements](../architecture/deployment-requirements.md)).
 - Follow [Ceph hardware recommendations](https://docs.ceph.com/en/latest/start/hardware-recommendations/) for CPU per OSD, RAM, and network separation of public vs cluster traffic.
 - Leave capacity margin for rebuilds, backups, and cross-AZ replication so recovery does not degrade production I/O.
 

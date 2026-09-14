@@ -34,38 +34,6 @@ The foundation provides the core capabilities that the rest of the platform reli
 
     [:octicons-arrow-right-24: Storage](storage.md)
 
--   :lucide-settings:{ .lg .middle } __Tooling__
-
-    ---
-
-    **GitOps**, **web console**, **SSH key store**, observability, and quotas: deploy and operate the platform and tenant resources from one place.
-
-    [:octicons-arrow-right-24: Tooling](tooling.md)
-
-</div>
-
-## Managed services
-
-These services run on the foundation. Availability depends on your Superphenix version and configuration.
-
-<div class="grid cards" markdown>
-
--   :lucide-layers:{ .lg .middle } __PaaS__
-
-    ---
-
-    **Kubernetes (KaaS)**: VM node pools, **integrated CNI/CSI**, upgrades, and the same VPCs and storage as IaaS. *Console availability varies by release.*
-
-    [:octicons-arrow-right-24: PaaS](paas.md)
-
--   :lucide-package:{ .lg .middle } __SaaS__
-
-    ---
-
-    **Managed applications** (databases, registries, Git, file sync, …): the service catalog is evolving; see the SaaS page.
-
-    [:octicons-arrow-right-24: SaaS](saas.md)
-
 </div>
 
 ## How they fit together

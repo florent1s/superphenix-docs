@@ -1,0 +1,6 @@
+# Zensical build output (rebuilt and published by CI)
+site/
+
+# Local tooling
+.venv/
+.cache/
