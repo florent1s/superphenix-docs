@@ -31,6 +31,4 @@ systemConfiguration:
 - **`network.addressRanges.cluster`**: address range for Ceph replication and recovery traffic. Keep node addresses within the reserved range.
 - **`storage.deviceFilter`**: which disks Rook claims as OSDs (for example NVMe and SCSI disks matching `nvme*` or `sd*`).
 
-For network planning around public vs cluster storage traffic, see [Network requirements](../../architecture/network-requirements.md). For disk sizing and Ceph media guidance, see [Hardware requirements](../../architecture/deployment-requirements.md).
-
 For advanced options, see the [rook-ceph-cluster](https://artifacthub.io/packages/helm/rook/rook-ceph-cluster) Helm chart values.

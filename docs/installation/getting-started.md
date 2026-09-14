@@ -9,7 +9,7 @@ Run every command from a **bootstrap host** that can reach the nodes (typically 
 - **talosctl** ([CLI reference](https://www.talos.dev/latest/reference/cli/)), **Helm** ([install](https://helm.sh/docs/intro/install/)), and **kubectl**
 - **Talos 1.12.6 or older** — newer versions hit a Linux kernel bug that breaks the SDN. Superphenix is **only officially supported on Talos**.
 - An **IPv4 range on the network behind the external interface**. Superphenix picks addresses from that subnet at random and assigns them to **NAT gateways** and **elastic IPs**. If the subnet is shared with node addresses or other devices, those IPs can be excluded from the IPAM. Ideally, reserve the whole range (or a dedicated part of it) for Superphenix.
-- A **domain** for the console (and ArgoCD if you expose it). The cluster serves HTTP(S) on **every node** on ports **80** and **443**, so DNS only needs to point at **one** node. For HA, use a load balancer or DNS round-robin.
+- A **domain name** for the console. The cluster serves HTTP(S) on **every node** on ports **80** and **443**, so DNS only needs to point at **one** node. For HA, use a load balancer or DNS round-robin.
 
     !!! tip "No DNS?"
         Use **[nip.io](https://nip.io)** against an internal node IP, for example `console.192.168.1.10.nip.io`.
@@ -22,45 +22,61 @@ Boot the nodes with the [Talos getting started](https://talos.dev/v1.11/introduc
 talosctl gen config spx-local https://<api-endpoint>:6443
 ```
 
-Edit `controlplane.yaml` **before** you apply it. Superphenix installs the CNI and CoreDNS itself; this 3-node lab also schedules workloads on the control planes. Control planes must enable **MutatingAdmissionPolicy**.
+Edit `controlplane.yaml` **before** you apply it. Superphenix installs the CNI and CoreDNS itself; this 3-node lab also schedules workloads on the control planes. Control planes must enable **MutatingAdmissionPolicy**. Replace the interface name, gateway, and `192.168.1.0/24` subnets with your lab network.
 
-```yaml
-machine:
-  files:
-    - content: |
-        [plugins]
-          [plugins."io.containerd.grpc.v1.cri"]
-            device_ownership_from_security_context = true
-          [plugins."io.containerd.cri.v1.runtime"]
-            device_ownership_from_security_context = true
-      path: /etc/cri/conf.d/20-customization.part
-      op: create
-  kernel:
-    modules:
-      - name: openvswitch
-  network:
-    interfaces:
-      - interface: ext0 # same name on every node (NIC, bond, or VLAN)
-        dhcp: true
-        routes:
-          - network: 0.0.0.0/0
-            gateway: 192.168.1.1 # your lab default gateway
+???+ example "controlplane.yaml"
 
-cluster:
-  allowSchedulingOnControlPlanes: true
-  network:
-    cni:
-      name: none
-  coreDNS:
-    disabled: true
-  controllerManager:
-    extraArgs:
-      feature-gates: "MutatingAdmissionPolicy=true"
-  apiServer:
-    extraArgs:
-      feature-gates: "MutatingAdmissionPolicy=true"
-      runtime-config: "admissionregistration.k8s.io/v1beta1=true"
-```
+    ```yaml
+    cluster:
+      allowSchedulingOnControlPlanes: true
+      network:
+        cni:
+          name: none
+        podSubnets:
+          - 10.0.0.0/12
+          - fd00:100:0000:0::/96
+        serviceSubnets:
+          - 10.16.0.0/12
+          - fd00:100:ffff:0::/112
+      coreDNS:
+        disabled: true
+      controllerManager:
+        extraArgs:
+          feature-gates: "MutatingAdmissionPolicy=true"
+      apiServer:
+        extraArgs:
+          feature-gates: "MutatingAdmissionPolicy=true"
+          runtime-config: "admissionregistration.k8s.io/v1beta1=true"
+      etcd:
+        advertisedSubnets:
+          - 192.168.1.0/24 # Change this with your lab network
+
+    machine:
+      files:
+        - content: |
+            [plugins]
+              [plugins."io.containerd.grpc.v1.cri"]
+                device_ownership_from_security_context = true
+              [plugins."io.containerd.cri.v1.runtime"]
+                device_ownership_from_security_context = true
+          path: /etc/cri/conf.d/20-customization.part
+          op: create
+      kernel:
+        modules:
+          - name: openvswitch
+      kubelet:
+        nodeIP:
+          validSubnets:
+            - 192.168.1.0/24 # Change this with your lab network
+      network:
+        interfaces:
+          - interface: ext0 # Same name on every node (NIC, bond, or VLAN)
+            dhcp: true # Ensure DHCP always gives the same addresses to your nodes, or configure static addresses.
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 192.168.1.254 # Your lab default gateway
+    ```
+
 
 ???+ warning "Same external interface name on every node"
     The **external** interface must have the **same name on every node** (`ext0` here). Superphenix uses that name cluster-wide. If kernel names differ, append a `LinkAliasConfig` per node (physical NICs only; name bonds and VLANs yourself). Keep `name: ext0` identical; change only the MAC:
@@ -155,6 +171,9 @@ clusters:
             # Replace with the IPs of your 3 masters here
             masterNodes: "192.168.1.150,192.168.1.151,192.168.1.153"
 ```
+
+!!! warning "Local storage for debugging only"
+    If slow disks perform poorly with Ceph, you can use the `local-path` storage class to avoid network-storage overhead. Data is tied to one node and is lost if that node or disk is lost, so workloads cannot move freely between nodes. See [Using local storage](../operations/storage/using-local-storage.md).
 
 Install the **superphenix-operator** on the Talos cluster using Helm:
 ```bash
