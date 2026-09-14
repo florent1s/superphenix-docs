@@ -36,7 +36,7 @@ The wizard has two steps: **General Information** and **Specifications**.
 
 **Enable NAT gateway** creates a gateway inside the subnet and adds a default route through it. Traffic from a VM goes to the subnet gateway, then to the NAT gateway, then to the Internet, with the gateway's address as source. Without it, the VMs can reach the other subnets of the VPC and nothing outside. The gateway is also what an EIP attaches to, so the EIP wizard lists subnets that have one and hides the others.
 
-**Make the network private** cuts the subnet off from every other subnet, including the ones in the same VPC. VMs on a private subnet talk to each other, to the gateway, and to the Internet if the subnet has a NAT gateway. Use it for workloads that must stay unreachable from the rest of the project. For finer rules, keep the subnet open and use security groups instead.
+**Make the network private** cuts the subnet off from every other subnet, including the ones in the same VPC. VMs on a private subnet talk to each other, to the gateway, and to the Internet if the subnet has a NAT gateway. Use it for workloads that must stay unreachable from the rest of the project. For finer rules, keep the subnet open and use [security groups](create-a-security-group.md) instead.
 
 You can change both options later from the subnet details page with **Options → Edit**. One exception: the console refuses to disable a NAT gateway while an EIP still uses it. Delete the EIPs first.
 

@@ -71,5 +71,5 @@ Without DNAT rules, an Internal CIDR EIP opens no inbound port.
 ## Notes
 
 - One NAT gateway serves one subnet. Two VMs on the same subnet can each have their own EIP.
-- Security groups apply on top of the EIP. When no security group targets the VM, all traffic passes. See [Network](../../features/network.md) for the rules.
+- Security groups apply on top of the EIP. When no security group targets the VM, all traffic passes. See [Create a security group](../network/create-a-security-group.md) to filter it, and [Network](../../features/network.md) for the concepts.
 - Deleting the EIP releases the public address. The VM keeps its private IP and stays up.
