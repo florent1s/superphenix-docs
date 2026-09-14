@@ -60,6 +60,9 @@ nav = [
     ]}
   ]},
   { "Operations" = [
+    { "Network" = [
+      { "Setting the MTU of subnets" = "operations/network/setting-the-mtu-of-subnets.md" }
+    ]},
     { "Storage" = [
       { "Configuring the storage cluster" = "operations/storage/configuring-the-storage-cluster.md" },
       { "Connecting a workload and storage cluster" = "operations/storage/connecting-a-workload-and-storage-cluster.md" },
