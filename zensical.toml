@@ -75,6 +75,15 @@ nav = [
     ]},
     { "Web console" = "operations/console.md" }
   ]},
+  { "PaaS" = [
+    { "KaaS" = [
+      { "Overview" = "paas/kaas/index.md" },
+      { "Basic operations" = "paas/kaas/basic-operations.md" },
+      { "Advanced configuration" = "paas/kaas/advanced-configuration.md" },
+      { "Disaster recovery" = "paas/kaas/disaster-recovery.md" },
+      { "Network configuration" = "paas/kaas/network-configuration.md" }
+    ]}
+  ]},
   { "Contributing" = "contributing.md" },
   { "Enterprise support" = "enterprise-support.md" }
 ]
