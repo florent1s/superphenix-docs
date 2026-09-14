@@ -51,7 +51,8 @@ nav = [
   ]},
   { "User Guides" = [
     { "Network" = [
-      { "Create a subnet with a NAT gateway" = "user-guides/network/create-a-subnet.md" }
+      { "Create a subnet with a NAT gateway" = "user-guides/network/create-a-subnet.md" },
+      { "Create a security group" = "user-guides/network/create-a-security-group.md" }
     ]},
     { "Virtual machines" = [
       { "Overview" = "user-guides/virtual-machines/index.md" },
