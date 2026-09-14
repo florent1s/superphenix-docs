@@ -1,6 +1,6 @@
 # Compute
 
-Superphenix Compute provides on-demand, cloud-native virtual machines designed for high performance, reliability, and ease of management. Whether you are running microservices, relational databases, or legacy enterprise workloads, Compute offers dedicated CPU and memory, flexible networking, and persistent storage.
+Superphenix Compute manages virtual machine instances and full-state instance snapshots across availability zones.
 
 ## Services
 
@@ -10,35 +10,35 @@ Superphenix Compute provides on-demand, cloud-native virtual machines designed f
 
     ---
 
-    Create and manage high-performance virtual machines with dedicated vCPUs, scalable RAM, multi-network attachments, and web-based consoles.
+    Virtual machines with configurable vCPU, memory, multi-interface networking, persistent disks, and web consoles.
 
-    [:octicons-arrow-right-24: Learn about Instances](instance.md)
+    [:octicons-arrow-right-24: Instances](instance.md)
 
 -   **[:material-camera: Instance Snapshots](instance-snapshot.md)**
 
     ---
 
-    Capture point-in-time, full-state snapshots of your virtual machines and all attached disks for instant rollbacks and safe upgrades.
+    Point-in-time snapshots of virtual machine configuration and attached disks for rollbacks and state capture.
 
-    [:octicons-arrow-right-24: Learn about Instance Snapshots](instance-snapshot.md)
+    [:octicons-arrow-right-24: Instance snapshots](instance-snapshot.md)
 
 </div>
 
-## Key Capabilities
+## Core Capabilities
 
-- **Flexible Sizing & Performance**: Configure exact vCPU and RAM allocations to match your workload's requirements.
-- **Isolated Multi-Interface Networking**: Connect instances to private project subnets with automated IP allocation or custom static IPs.
-- **Persistent Block Storage**: Attach bootable root disks and high-speed secondary data disks powered by resilient distributed storage.
-- **Interactive Consoles**: Access virtual machines directly from your browser using the built-in Serial Console or graphical VNC Console.
-- **Enterprise Firmware & Security**: Deploy modern workloads with UEFI firmware, Secure Boot validation, and virtual TPM (vTPM 2.0).
-- **Automated Bootstrapping**: Initialize instances seamlessly on first boot using cloud-init and managed SSH key injection.
+- **Compute Sizing**: Allocate 1 to 32 vCPUs and 1 to 64 GB RAM, with configurable CPU topology (sockets, cores, threads).
+- **Multi-Interface Networking**: Attach multiple isolated L2 subnets with automatic IPAM or static IP assignment.
+- **Persistent Storage**: Attach bootable root volumes, secondary block disks, CD-ROM ISOs, or OCI container disks.
+- **Access and Consoles**: Connect via SSH, or use the browser-based web serial terminal and graphical VNC console.
+- **Firmware Options**: Support for legacy BIOS, UEFI, Secure Boot, persistent EFI variables, and vTPM 2.0.
+- **Cloud-Init Initialization**: Automatic user creation, SSH key injection, and custom user data execution on first boot.
 
 ---
 
 ## User Guides
 
-For step-by-step console tutorials and practical examples:
+Step-by-step procedures in the web console:
 
-- **[Create a virtual machine](../../user-guides/virtual-machines/create-a-vm.md)**: Step-by-step walkthrough of creating and booting an Ubuntu virtual machine with persistent storage and cloud-init.
-- **[Expose a VM with an Elastic IP](../../user-guides/virtual-machines/expose-with-eip.md)**: Guide to provisioning an Elastic IP, configuring NAT, and connecting via SSH.
-- **[Virtual machines user guide overview](../../user-guides/virtual-machines/index.md)**: Prerequisites, default images, and common workflow concepts.
+- **[Create a virtual machine](../../user-guides/virtual-machines/create-a-vm.md)**: Launch a VM with boot storage, cloud-init, and network configuration.
+- **[Expose a VM with an Elastic IP](../../user-guides/virtual-machines/expose-with-eip.md)**: Attach a public IP and configure SSH access.
+- **[Virtual machines overview](../../user-guides/virtual-machines/index.md)**: Prerequisites, default OS images, and credentials.

@@ -1,6 +1,6 @@
 # Storage
 
-Superphenix provides enterprise-grade, highly available storage services designed for modern cloud workloads. From high-IOPS persistent block storage for virtual machines to scalable S3-compatible object storage for media and backups, you can store, protect, and manage your data with ease.
+Superphenix storage services provide persistent block storage for virtual machines, volume snapshots, automated backup and cross-zone replication, and S3-compatible object storage.
 
 ## Storage Services
 
@@ -10,43 +10,43 @@ Superphenix provides enterprise-grade, highly available storage services designe
 
     ---
 
-    Persistent block storage volumes for virtual machines. Provision empty disks, import OS images, and resize dynamically on demand.
+    Persistent block storage volumes for virtual machines. Supports raw volumes, image imports, and online resizing.
 
-    [:octicons-arrow-right-24: Learn about Disks](disk.md)
+    [:octicons-arrow-right-24: Disks](disk.md)
 
 -   **[:material-camera-outline: Snapshots](snapshot.md)**
 
     ---
 
-    Point-in-time, copy-on-write backups of individual disk volumes for instant recovery and hydrating new disks.
+    Point-in-time, copy-on-write volume snapshots for recovery checkpoints and cloning new disks.
 
-    [:octicons-arrow-right-24: Learn about Snapshots](snapshot.md)
+    [:octicons-arrow-right-24: Snapshots](snapshot.md)
 
 -   **[:material-cloud-sync: Backup & DR](baas.md)**
 
     ---
 
-    Automated backup schedules and continuous cross-zone replication to ensure business continuity and minimize RPO/RTO.
+    Automated snapshot scheduling policies and asynchronous cross-zone volume replication.
 
-    [:octicons-arrow-right-24: Learn about Backup & DR](baas.md)
+    [:octicons-arrow-right-24: Backup & DR](baas.md)
 
 -   **[:material-bucket-outline: Object Storage](bucket.md)**
 
     ---
 
-    S3-compatible, durable cloud object storage for media files, logs, database dumps, and application assets.
+    S3-compatible object storage for application assets, logs, backups, and media files.
 
-    [:octicons-arrow-right-24: Learn about Object Storage](bucket.md)
+    [:octicons-arrow-right-24: Object Storage](bucket.md)
 
 </div>
 
 ---
 
-## Choosing the Right Storage
+## Storage Types
 
-| Service | Storage Type | Protocol / Access | Typical Use Cases |
+| Service | Storage Type | Access Protocol | Scope & Use Case |
 | :--- | :--- | :--- | :--- |
-| **[Disks](disk.md)** | Block Storage | Mounted as virtual disk (`virtio`, `sata`) | OS boot disks, database storage, file systems, low-latency applications. |
-| **[Snapshots](snapshot.md)** | Point-in-time copy | Internal storage restore | Pre-upgrade checkpoints, volume cloning, disaster recovery baselines. |
-| **[Backup & DR](baas.md)** | Data Protection | Scheduled policies & replication | Compliance backups, offsite data copies, cross-zone disaster recovery. |
-| **[Object Storage](bucket.md)** | Object Storage | AWS S3 REST API (HTTPS) | Web static assets, video/image media, raw data lakes, application backups. |
+| **[Disks](disk.md)** | Block storage | Virtual disk bus (`virtio`, `sata`, `scsi`) | VM root boot disks, persistent database storage, local filesystems. |
+| **[Snapshots](snapshot.md)** | Point-in-time copy | Storage volume restore | Recovery points, disk cloning, pre-maintenance backups. |
+| **[Backup & DR](baas.md)** | Scheduled snapshot & replication | Cron policies & block replication | Retention compliance, offsite copies, cross-zone failover. |
+| **[Object Storage](bucket.md)** | Object storage | S3 API over HTTPS | Static assets, media, logs, data archives, application file uploads. |

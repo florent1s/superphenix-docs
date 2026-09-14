@@ -1,90 +1,67 @@
 # Instance Snapshot
 
-An **Instance Snapshot** creates a point-in-time backup of an entire virtual machine, capturing its exact hardware configuration alongside all attached persistent disks. 
+An **Instance Snapshot** captures the state of a virtual machine at a specific point in time, including its hardware configuration (vCPU, memory, network interfaces, firmware) and all attached persistent disks.
 
-Unlike a standard disk snapshot that only backs up a single isolated volume, an instance snapshot coordinates across every disk attached to the VM simultaneously. This ensures multi-disk data consistency and allows you to instantly roll back your entire system if something goes wrong.
-
----
-
-## Why Use Instance Snapshots?
-
-- **Pre-Maintenance Checkpoints**: Take a snapshot right before updating operating system packages, upgrading databases, modifying network configs, or deploying major application releases.
-- **Instant Rollback**: If an upgrade fails or data is accidentally corrupted, restore the instance to its exact previous state in minutes.
-- **Zero-Downtime Live Backups**: Snapshots are taken while the instance is running, without requiring you to shut down or restart your services.
-- **Coordinated Multi-Disk Consistency**: When your workload uses multiple disks (such as a root OS disk and dedicated database data disks), an instance snapshot freezes all disks at the same exact moment.
-- **Automated Protection**: Enroll critical instances into recurring backup schedules with automated retention rules.
+Unlike a standalone disk snapshot that only captures a single volume, an instance snapshot coordinates across every attached disk simultaneously to provide multi-disk crash or filesystem consistency.
 
 ---
 
-## How It Works
+## Snapshot Mechanics
 
-Instance snapshots leverage copy-on-write storage technology and guest-level coordination:
+Instance snapshots rely on underlying copy-on-write storage pointers and guest agent coordination:
 
-1. **Guest Filesystem Coordination**: If the `qemu-guest-agent` is running inside your virtual machine, the platform issues an `fsfreeze` command. This temporarily flushes all pending in-memory write buffers and journal transactions to disk.
-2. **Atomic Storage Capture**: The underlying storage layer instantly records block pointers for each attached volume.
-3. **Thaw & Resume**: The guest filesystem unfreezes immediately (typically in milliseconds). The VM continues running normally without any noticeable interruption.
-4. **Metadata Preservation**: The snapshot also records the instance's CPU, memory, network interfaces, and firmware configurations.
+1. **Guest Filesystem Freezing**: If `qemu-guest-agent` is running inside the VM, the platform issues an `fsfreeze` command to flush dirty in-memory buffers and file system journals to disk.
+2. **Storage Snapshot Execution**: The underlying storage driver records block pointers across all attached volumes simultaneously.
+3. **Thaw**: The guest filesystems are immediately unfrozen (`fsthaw`), allowing normal I/O operations to resume.
+4. **Metadata Capture**: The virtual machine specification (CPU, RAM, device buses, network interfaces) is recorded alongside the child disk snapshots.
 
-!!! tip "Ensure Consistent Backups with Guest Agent"
-    Always install the QEMU guest agent (`sudo apt install qemu-guest-agent`) on your virtual machines. This enables the platform to flush disk caches cleanly, guaranteeing file system integrity rather than just crash consistency.
-
----
-
-## Snapshot Operations & Lifecycle
-
-### Taking a Snapshot
-
-Instance snapshots can be triggered at any time from the web console (under **Compute** > **Instances** > **Options** > **Create Snapshot**) or via GitOps automation.
-
-During snapshot creation:
-
-- The platform signals the guest agent inside the VM to flush pending transactions and freeze filesystems (`fsfreeze`).
-- Underlying storage snapshots are coordinated across all attached volumes simultaneously.
-- Virtual machine specifications (CPU, memory, networking, firmware) are captured alongside the child disk snapshots.
-
-For details on managing running virtual machines and accessing instance actions, see the [Create a virtual machine](../../user-guides/virtual-machines/create-a-vm.md#start-and-access-the-vm) user guide.
+If `qemu-guest-agent` is not installed or responsive, the snapshot proceeds without `fsfreeze`, resulting in a crash-consistent rather than filesystem-consistent snapshot.
 
 ---
 
-### Restoring an Instance from a Snapshot
+## Snapshot Operations and Restoration
+
+### Creating a Snapshot
+
+Snapshots can be created while the instance is running or stopped:
+
+- From the console: Navigate to **Compute** > **Instances**, open **Options** (or the **Snapshots** tab), and select **Create Snapshot**.
+- Via GitOps: Declare a snapshot resource targeting the virtual machine.
+
+For details on navigating instance actions, see the [Create a virtual machine](../../user-guides/virtual-machines/create-a-vm.md#start-and-access-the-vm) user guide.
+
+### Restoring from a Snapshot
 
 Restoring an instance rolls back its virtual hardware and all attached disks to the exact state captured in the snapshot:
 
-1. In the console, navigate to **Compute** > **Instances**, select your instance, and open the **Snapshots** tab.
-2. Select the desired restore point and confirm the restoration action.
+1. In the console, go to **Compute** > **Instances**, select the target instance, and open the **Snapshots** tab.
+2. Select the restore point and confirm the restoration.
 
 !!! warning "Restoration Overwrites Current Data"
-    Restoring a snapshot overwrites the current contents of the attached disks with the data from the snapshot. Any data written since the snapshot was taken will be lost. Back up any uncommitted data before proceeding.
+    Restoring an instance overwrites the contents of all attached persistent disks with the snapshot data. Any data written since the snapshot was taken is permanently replaced.
 
-Upon confirmation, the instance powers down, reverts its disks and configuration to the snapshot checkpoint, and restarts according to its configured Run Strategy.
+After restoration completes, the instance powers on according to its configured Run Strategy.
 
 ---
 
-## Inspecting Child Disk Snapshots
+## Child Disk Snapshots
 
-When you view an instance snapshot in the console, you can expand its details to see the individual **Child Disk Snapshots**. 
+Every instance snapshot automatically generates corresponding **Child Disk Snapshots** for each attached volume.
 
-Each attached volume has its own corresponding snapshot record showing:
+The snapshot details view displays:
+
 - Source disk name and capacity.
-- Snapshot creation timestamp.
-- Current readiness state.
+- Creation timestamp.
+- Readiness status.
 
-This makes it easy to verify that all attached storage volumes were captured successfully during the snapshot operation.
-
----
-
-## Automated Snapshot Schedules
-
-Rather than taking manual snapshots before every change, you can configure automated snapshot schedules:
-
-- **Schedule Frequency**: Define cron-based schedules (e.g., every night at 02:00 UTC, or weekly).
-- **Retention Policies**: Automatically expire and delete older snapshots after a set retention period (e.g., retain for 7 days or 30 days) to prevent storage bloat.
-- **Dynamic Label Targeting**: Tag instances with labels (e.g., `backup-tier: gold`) so that new workloads are automatically enrolled into matching backup schedules.
+Child disk snapshots can also be used independently to hydrate new standalone disks under **Storage** > **Disks**.
 
 ---
 
-## Best Practices
+## Scheduled Snapshot Policies
 
-- **Quiesce High-Throughput Databases**: For heavy transactional databases (PostgreSQL, MySQL, Oracle), run a brief database-level checkpoint or flush command before taking snapshots to ensure application-level consistency.
-- **Set Expiration Windows**: Always pair scheduled snapshots with retention policies so that outdated snapshots are automatically pruned.
-- **Test Your Restores**: Periodically perform disaster recovery drills by restoring a snapshot into a staging instance to verify backup health and recovery time.
+To automate backups across instances:
+
+- **Schedule Cadence**: Define cron expressions (e.g. daily at 02:00 UTC or weekly).
+- **Retention Rules**: Set expiration periods (e.g. 7 days, 30 days) to prune older snapshots automatically.
+- **Label Selectors**: Apply key-value labels to instances (e.g., `backup: daily`) so that matching workloads are automatically included in the backup schedule.
