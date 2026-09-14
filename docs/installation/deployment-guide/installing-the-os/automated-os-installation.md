@@ -4,6 +4,9 @@ This guide covers using the **superphenix-operator**, the **talos-operator** and
 
 Part of the [deployment guide](../index.md). For the manual alternative, see [Manual OS installation](manual-os-installation.md).
 
+!!! warning "Experimental"
+    Automated OS installation is still **experimental**. It is intended for installing **hundreds of servers in a datacenter**, not for a first lab or a small cluster. Prefer [Manual OS installation](manual-os-installation.md) unless you need that scale.
+
 ## When to use this path
 
 - **Greenfield datacenter**: bare-metal servers with BMC/IPMI are registered once; the operator drives imaging, Talos configuration, and cluster bootstrap.
@@ -117,6 +120,15 @@ spec:
     controlplanePort: 6443
     talosVersion: "v1.13.0"
     k8sVersion: "v1.35.0"
+    machineOverridesControlPlane:
+      - cluster:
+          controllerManager:
+            extraArgs:
+              feature-gates: "MutatingAdmissionPolicy=true"
+          apiServer:
+            extraArgs:
+              feature-gates: "MutatingAdmissionPolicy=true"
+              runtime-config: "admissionregistration.k8s.io/v1beta1=true"
     nodes:
       - hostname: "az-paris-1-master01"
         type: controlplane

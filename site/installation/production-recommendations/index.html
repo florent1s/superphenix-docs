@@ -1926,7 +1926,7 @@
 </ul>
 <p><strong>Storage (Ceph)</strong></p>
 <ul>
-<li>Use <strong>datacenter- or enterprise-grade</strong> SSDs and NVMe for Ceph OSDs. <strong>Consumer SSDs</strong> are a poor fit: Ceph is sensitive to write latency and endurance, and performance can <strong>degrade sharply</strong> under sustained or mixed workloads (see <a href="../../architecture/deployment-requirements/">Hardware requirements</a>).</li>
+<li>Use <strong>datacenter or enterprise-grade</strong> SSDs and NVMe for Ceph OSDs. <strong>Consumer SSDs</strong> are a poor fit: Ceph is sensitive to write latency and endurance, and performance can <strong>degrade sharply</strong> under sustained or mixed workloads (see <a href="../../architecture/deployment-requirements/">Hardware requirements</a>).</li>
 <li>Follow <a href="https://docs.ceph.com/en/latest/start/hardware-recommendations/">Ceph hardware recommendations</a> for CPU per OSD, RAM, and network separation of public vs cluster traffic.</li>
 <li>Leave capacity margin for rebuilds, backups, and cross-AZ replication so recovery does not degrade production I/O.</li>
 </ul>

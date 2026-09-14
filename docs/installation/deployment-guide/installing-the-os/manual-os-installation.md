@@ -11,7 +11,7 @@ Part of the [deployment guide](../index.md). For the automated alternative, see 
 - **Bring your own cluster**: you manage Talos upgrades, machine configs, and node lifecycle yourself; Superphenix connects to the cluster via a `Cluster` resource with `connection.mode: Local` or `Remote`.
 
 !!! warning "Official support scope"
-    Superphenix can technically run on any conformant Kubernetes cluster, but we **officially support Talos**. Current default values and operational assumptions are tuned for Talos-based clusters.
+    Superphenix is **only officially supported on Talos**. Use **Talos 1.12.6 or older**: newer versions hit a Linux kernel bug that breaks the SDN.
 
 ## Prerequisites
 
@@ -19,7 +19,8 @@ Before you start, confirm:
 
 - **Hardware and network** meet the profile for your topology: see [Hardware requirements](../../../architecture/deployment-requirements.md) and [Network requirements](../../../architecture/network-requirements.md).
 - **Deployment topology** is chosen (hyperconverged vs decoupled, management in vs out): see [Deployment topology](../../../architecture/deployment-topology.md).
-- **`talosctl`** is installed on your workstation: [talosctl CLI reference](https://www.talos.dev/latest/reference/cli/).
+- **`talosctl`** ([CLI reference](https://www.talos.dev/latest/reference/cli/)) and **`kubectl`** on your workstation.
+- **Talos 1.12.6 or older** installer media (ISO, PXE, or disk image).
 - Servers can reach each other on the **cluster VLAN** and your workstation can reach each node on the Talos API port during bootstrap.
 
 ## Installation overview
@@ -39,17 +40,72 @@ Pick a stable **Kubernetes API endpoint** (VIP, load balancer, or first control-
 talosctl gen config spx-cluster https://<api-endpoint>:6443
 ```
 
-This produces `controlplane.yaml`, `worker.yaml`, and `talosconfig`. Edit the generated files before applying them:
+This produces `controlplane.yaml`, `worker.yaml`, and `talosconfig`. Edit the generated files **before** you apply them.
 
-- Set node hostnames, disk selectors, and network interfaces to match your hardware.
-- For a minimal 3-node hyperconverged lab, you can run all nodes as control-plane members (no separate workers).
-- Align `podCIDR` and `serviceCIDR` with what you plan to declare later in the Superphenix `Cluster` resource.
+Set node hostnames, disk selectors, and addressing to match your hardware. Superphenix installs the CNI and CoreDNS itself, so those must be disabled in Talos. Every node also needs the containerd and kernel settings below, plus an **external** interface with the **same name** on every node. Control-plane configs must enable **MutatingAdmissionPolicy**.
 
-Official reference: [Talos Getting Started](https://talos.dev/v1.11/introduction/getting-started).
+Edit `controlplane.yaml` (and `worker.yaml` if you use dedicated workers) with at least:
+
+```yaml
+machine:
+  files:
+    - content: |
+        [plugins]
+          [plugins."io.containerd.grpc.v1.cri"]
+            device_ownership_from_security_context = true
+          [plugins."io.containerd.cri.v1.runtime"]
+            device_ownership_from_security_context = true
+      path: /etc/cri/conf.d/20-customization.part
+      op: create
+  kernel:
+    modules:
+      - name: openvswitch
+  network:
+    interfaces:
+      - interface: ext0 # same name on every node (NIC, bond, or VLAN)
+        dhcp: true
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.1.1 # your default gateway
+
+cluster:
+  network:
+    cni:
+      name: none
+  coreDNS:
+    disabled: true
+  controllerManager:
+    extraArgs:
+      feature-gates: "MutatingAdmissionPolicy=true"
+  apiServer:
+    extraArgs:
+      feature-gates: "MutatingAdmissionPolicy=true"
+      runtime-config: "admissionregistration.k8s.io/v1beta1=true"
+```
+
+For a small hyperconverged lab with only control-plane nodes, also set `cluster.allowSchedulingOnControlPlanes: true` so Superphenix workloads can run on those nodes. Dedicated workers do not need that flag or the `controllerManager` / `apiServer` extraArgs; apply the same `machine` and `cluster.network` / `coreDNS` settings in `worker.yaml`.
+
+Replace `ext0`, DHCP vs static addressing, and the default gateway to match your network. Keep the interface **name** identical on every node.
+
+???+ warning "Same external interface name on every node"
+    The **external** interface must have the **same name on every node** (`ext0` here). Superphenix uses that name cluster-wide. If kernel names differ, append a `LinkAliasConfig` per node (physical NICs only; name bonds and VLANs yourself). Keep `name: ext0` identical; change only the MAC:
+
+    ```yaml
+    ---
+    apiVersion: v1alpha1
+    kind: LinkAliasConfig
+    name: ext0
+    selector:
+      match: mac(link.permanent_addr) == "00:1a:2b:3c:4d:5e" # this node's NIC MAC
+    ```
+
+    Do not use kernel-style alias names (`eth0`, `ens3`, `enp0s31f6`, …).
+
+Official reference: [Talos Getting Started](https://talos.dev/v1.11/introduction/getting-started). For a full 3-node lab walkthrough including Superphenix Helm values, see [Getting started](../../getting-started.md).
 
 ## Step 2: Boot the nodes
 
-Install Talos on each server using one of:
+Install **Talos 1.12.6 or older** on each server using one of:
 
 - **ISO**: boot from the Talos installer image and install to disk.
 - **PXE**: network boot for repeatable datacenter provisioning.

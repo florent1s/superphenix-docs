@@ -22,7 +22,7 @@ Boot the nodes with the [Talos getting started](https://talos.dev/v1.11/introduc
 talosctl gen config spx-local https://<api-endpoint>:6443
 ```
 
-Edit `controlplane.yaml` **before** you apply it. Superphenix installs the CNI and CoreDNS itself; this 3-node lab also schedules workloads on the control planes.
+Edit `controlplane.yaml` **before** you apply it. Superphenix installs the CNI and CoreDNS itself; this 3-node lab also schedules workloads on the control planes. Control planes must enable **MutatingAdmissionPolicy**.
 
 ```yaml
 machine:
@@ -53,6 +53,13 @@ cluster:
       name: none
   coreDNS:
     disabled: true
+  controllerManager:
+    extraArgs:
+      feature-gates: "MutatingAdmissionPolicy=true"
+  apiServer:
+    extraArgs:
+      feature-gates: "MutatingAdmissionPolicy=true"
+      runtime-config: "admissionregistration.k8s.io/v1beta1=true"
 ```
 
 ???+ warning "Same external interface name on every node"
@@ -152,8 +159,7 @@ clusters:
 Install the **superphenix-operator** on the Talos cluster using Helm:
 ```bash
 helm install superphenix-operator \
-  ghcr.io/super-phenix/charts/superphenix-operator \
-  --version 0.7.0 \
+  oci://ghcr.io/super-phenix/charts/superphenix-operator:0.7.0 \
   --namespace superphenix-system \
   --create-namespace \
   -f values.yaml

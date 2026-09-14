@@ -123,8 +123,17 @@ talosVersion: ""
 k8sVersion: ""
 # 'MachineConfig' overrides for all types of nodes (array, optional):
 machineGlobalOverrides: []
-# 'MachineConfig' overrides for control plane nodes (array, optional):
-machineOverridesControlPlane: []
+# 'MachineConfig' overrides for control plane nodes (array, optional).
+# Control planes must enable MutatingAdmissionPolicy:
+machineOverridesControlPlane:
+  - cluster:
+      controllerManager:
+        extraArgs:
+          feature-gates: "MutatingAdmissionPolicy=true"
+      apiServer:
+        extraArgs:
+          feature-gates: "MutatingAdmissionPolicy=true"
+          runtime-config: "admissionregistration.k8s.io/v1beta1=true"
 # 'MachineConfig' overrides for worker nodes (array, optional):
 machineOverridesWorker: []
 

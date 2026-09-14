@@ -1961,8 +1961,17 @@
 <span class="nt">k8sVersion</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
 <span class="c1"># &#39;MachineConfig&#39; overrides for all types of nodes (array, optional):</span>
 <span class="nt">machineGlobalOverrides</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
-<span class="c1"># &#39;MachineConfig&#39; overrides for control plane nodes (array, optional):</span>
-<span class="nt">machineOverridesControlPlane</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="c1"># &#39;MachineConfig&#39; overrides for control plane nodes (array, optional).</span>
+<span class="c1"># Control planes must enable MutatingAdmissionPolicy:</span>
+<span class="nt">machineOverridesControlPlane</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cluster</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">controllerManager</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">extraArgs</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">feature-gates</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;MutatingAdmissionPolicy=true&quot;</span>
+<span class="w">      </span><span class="nt">apiServer</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">extraArgs</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">feature-gates</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;MutatingAdmissionPolicy=true&quot;</span>
+<span class="w">          </span><span class="nt">runtime-config</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;admissionregistration.k8s.io/v1beta1=true&quot;</span>
 <span class="c1"># &#39;MachineConfig&#39; overrides for worker nodes (array, optional):</span>
 <span class="nt">machineOverridesWorker</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
 
