@@ -54,7 +54,7 @@ These services run on the foundation. Availability depends on your Superphenix v
 
     ---
 
-    **Kubernetes (KaaS)**: VM node pools, **integrated CNI/CSI**, upgrades, and the same VPCs and storage as IaaS. *Console availability varies by release.*
+    **Kubernetes (KaaS)**: VM node pools, **integrated CNI/CSI**, disaster recovery, and the same VPCs and storage as IaaS.
 
     [:octicons-arrow-right-24: PaaS](paas.md)
 
