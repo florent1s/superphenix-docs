@@ -1,6 +1,20 @@
 # Network configuration
 
-## 
+## Node subnets
+
+Worker nodes need to talk to each other and therefore need at least one shared subnet between all node groups. You can than add more subnets to certain node groups depending on your needs.
+
+???+ note "Internal cluster CIDRs"
+    By default KaaS clusters use the following IP ranges:
+
+    1. Pod CIDR:
+        - `10.0.0.0/12`
+        - `fd00:100::/96`
+    2. Service CIDR:
+        - `10.96.0.0/16`
+        - `fd00:100:ffff::/112`
+    
+    To avoid issues your node's subnet CIDR should not overlap with the pod CIDR.
 
 ## Network policies
 
