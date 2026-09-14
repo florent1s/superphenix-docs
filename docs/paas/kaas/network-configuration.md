@@ -19,7 +19,7 @@ By default a KaaS cluster installation will deploy `networkPolicies` which ensur
 ### Customize the configuration
 
 !!! warning "Known limitations"
-    Currently this mechanism cannot be used to limit controlplane access to a specific range of public IPs. 
+    Currently this mechanism cannot be used to limit controlplane access to a specific range of public IPs.
 
 You can control the `networkPolicies` for the controlplane and worker nodes independently:
 

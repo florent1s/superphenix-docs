@@ -56,7 +56,7 @@ To accomplish this follow these steps:
         - **Chart Version**
         - **Namespace**: target namespace where the chart should be applied.
         - **Repository URL**: Source reposistory to pull the chart from.
-    3. Click on **Helm Chart Values → Edit values**and write the configuration overrides for you chart.
+    3. Click on **Helm Chart Values → Edit values** and write the configuration overrides for you chart.
 
 === "GitOps"
 

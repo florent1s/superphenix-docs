@@ -1,16 +1,16 @@
 # Basic operations
 
-This section details the most common actions regarding Kubernetes clusters on Superphenix: **deploying, scaling, upgrading and deleting**
+This section details the most common actions regarding Kubernetes clusters on Superphenix: **deploying, scaling, upgrading and deleting**.
 
 ## Deploying a cluster
 
 ???+ warning "Requirements"
-    KaaS cluster nodes are deployed in the same VPC and subnet as your standard virtual machines, but their controlplane runs inside a seperate VPC which means that the nodes will reach out over the world wide web to access it.
+    KaaS cluster nodes are deployed in the same VPC and subnet as any IaaS virtual machines, but their controlplane runs inside a separate VPC which means that the nodes will reach out over the world wide web to access it.
     Therefore, make sure that your subnet has internet access when creating a cluster.
     This can be achieved by creating an EIP with the SNAT option enabled and attaching it to your subnet.
 
-To deploy a cluster through the console, follow the steps of the creation wizard
-For a GitOps deployment, you can copy and adjust the example below based on your needs. Below is a complete walkthrough for both deployment methods:
+To deploy a cluster through the console, follow the steps of the creation wizard.  
+For a GitOps deployment, you can copy and adjust the example below based on your needs.
 
 === "Console"
 
@@ -107,7 +107,7 @@ Steps to add nodes to your cluster:
 
 ### Vertical scaling
 
-Steps to increase the size of nodes in an existing node group. This will trigger a rolling update for the given node groups and create new nodes with the update specification.
+Steps to increase the size of nodes in an existing node group. This will trigger a rolling update for the given node groups and create new nodes with the updated specification.
 
 === "Console"
 

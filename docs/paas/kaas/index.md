@@ -4,11 +4,11 @@ Superphenix is designed to offer **Kubernetes as a Service (KaaS)** so tenants c
 
 ## Main features
 
-### VM pools (worker and control nodes)
+### VM pools (worker nodes)
 
-Tenant clusters are backed by **pools of VMs** you define:
+Tenant clusters are backed by **pools of VMs** where you define:
 
-- **Custom VM sizing**: CPU, memory, and disk for control-plane and worker machines.
+- **VM sizing**: CPU, memory, and disk for control-plane and worker machines.
 - **Networking**: Node pools are attached to your **[VPCs and subnets](../../features/network.md)**; pods and services use the integrated **CNI** on top of that underlay.
 
 ### Platform integration

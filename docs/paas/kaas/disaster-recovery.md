@@ -1,10 +1,10 @@
 # Disaster recovery
 
-## Enabling disaster recovery
-
 Depending on the criticity of your workloads, you may want to be able to restore your cluster in case of catastrophic failure, or have the option to migrate it to a different AZ in case of a major outage.
 
-This can be achieved by enabling the disaster recovery option on your cluster as shown below. This makes it possible to include it in project-scoped backups.
+## Enabling disaster recovery
+
+Follow this guide to enable the disaster recovery option on your cluster. This makes it possible to include it in project-scoped backups.
 
 !!! warning "Backup creation"
     Enabling the disaster recovery option will not automatically create a corresponding backup schedule. You have to manually create a project-wide backup or backup schedule.
@@ -35,10 +35,10 @@ This can be achieved by enabling the disaster recovery option on your cluster as
 
     Full chart values: [sfs-kaas](https://github.com/super-phenix/superphenix/blob/main/components/dependencies/sfs-kaas/values.yaml).
 
-Enabling this functionality will create a dedicated etcd cluster and migrate the controlplane data to it. During the migration process the controlplane will become read-only, a migration typically only lasts a few minutes.
+Enabling this functionality will create a dedicated etcd cluster and migrate the controlplane data to it. During the migration process the controlplane will become read-only, a migration typically only takes a few minutes.
 
 !!! note "Post migration"
-    Once the controlplane is migrated to the dedicated datastore, complete the operation by rebooting your worker nodes.
+    Once the controlplane is migrated to the dedicated datastore, complete the operation by rebooting your worker nodes via the console.
 
 ## Restoring or migrating a cluster
 
