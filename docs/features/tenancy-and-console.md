@@ -113,5 +113,3 @@ When reporting an issue, include:
 2. What you expected instead.
 3. **Steps to reproduce**.
 4. A **link to the resource** (use **Share** on the resource detail page).
-
-See also [Tooling](tooling.md) for GitOps and platform operations.

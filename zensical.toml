@@ -47,19 +47,16 @@ nav = [
     { "Tenancy & console" = "features/tenancy-and-console.md" },
     { "Virtualization" = "features/virtualization.md" },
     { "Network" = "features/network.md" },
-    { "Storage" = "features/storage.md" },
-    { "Tooling" = "features/tooling.md" },
-    { "PaaS" = "features/paas.md" },
-    { "SaaS" = "features/saas.md" }
+    { "Storage" = "features/storage.md" }
   ]},
   { "Operations" = [
     { "Storage" = [
       { "Configuring the storage cluster" = "operations/storage/configuring-the-storage-cluster.md" },
       { "Connecting a workload and storage cluster" = "operations/storage/connecting-a-workload-and-storage-cluster.md" },
       { "Adding a storage class" = "operations/storage/adding-a-storage-class.md" },
-      { "Adding an object store" = "operations/storage/adding-an-object-store.md" }
+      { "Adding an object store" = "operations/storage/adding-an-object-store.md" },
+      { "Using local storage" = "operations/storage/using-local-storage.md" }
     ]},
-    { "Testing" = "operations/testing.md" },
     { "Web console" = "operations/console.md" }
   ]},
   { "Contributing" = "contributing.md" },
