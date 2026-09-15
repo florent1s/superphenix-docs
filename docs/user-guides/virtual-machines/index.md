@@ -30,4 +30,4 @@ A virtual machine in Superphenix is built from three things you pick in the crea
 
 You can replace all of this by switching on **Customize configuration** in the wizard's **Storage & SSH** step and providing your own cloud-init user data.
 
-For the concepts behind these pages, read [Virtualization](../../features/virtualization.md) and [Network](../../features/network.md).
+For the concepts behind these pages, read [Compute](../../features/compute/index.md) and [Network](../../features/network/index.md).

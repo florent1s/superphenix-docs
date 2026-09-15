@@ -4,7 +4,7 @@ A subnet is a private network segment with its own CIDR inside a VPC. It lives i
 
 You create a subnet when the `default` one does not fit: to pick your own address range, to isolate a group of VMs, or to get a NAT gateway. The NAT gateway gives the VMs outbound Internet access and is the attachment point for an Elastic IP (EIP). This guide creates `docs-demo-subnet` with a NAT gateway in one pass.
 
-For the concepts behind VPCs, subnets and gateways, read [Network](../../features/network.md).
+For the concepts behind VPCs, subnets and gateways, read [Network](../../features/network/index.md).
 
 ## Before you start
 
