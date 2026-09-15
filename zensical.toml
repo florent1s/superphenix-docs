@@ -44,7 +44,11 @@ nav = [
   ]},
   { "Features" = [
     { "Overview" = "features/index.md" },
-    { "Compute" = "features/compute/index.md" },
+    { "Compute" = [
+      { "Overview" = "features/compute/index.md" },
+      { "Instance" = "features/compute/instance.md" },
+      { "Instance Snapshot" = "features/compute/instance-snapshot.md" },
+    ]},
     { "Network" = [
       { "Overview" = "features/network/index.md" },
       { "VPC" = "features/network/vpc.md" },
@@ -53,7 +57,13 @@ nav = [
       { "Load Balancer" = "features/network/load-balancer.md" },
       { "Security Group" = "features/network/security-group/index.md" },
     ]},
-    { "Storage" = "features/storage/index.md" },
+    { "Storage" = [
+      { "Overview" = "features/storage/index.md" },
+      { "Disk" = "features/storage/disk.md" },
+      { "Snapshot" = "features/storage/snapshot.md" },
+      { "Backup & DR" = "features/storage/baas.md" },
+      { "Object Storage" = "features/storage/bucket.md" },
+    ]},
   ]},
   { "User Guides" = [
     { "Network" = [
