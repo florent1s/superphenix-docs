@@ -91,3 +91,7 @@ See [Deployment topology](../../architecture/deployment-topology.md#hyperconverg
     [:octicons-arrow-right-24: Installing decoupled](installing-an-az/installing-decoupled.md)
 
 </div>
+
+## After installation
+
+When the management plane and availability zones are deployed, continue with [Accessing Superphenix](../../operations/accessing-superphenix.md) to open the console, retrieve the initial Argo CD password, monitor synchronization, and troubleshoot deployment resources.
