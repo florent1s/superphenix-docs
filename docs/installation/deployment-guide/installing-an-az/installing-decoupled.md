@@ -85,3 +85,5 @@ helm upgrade superphenix-operator \
 You can monitor the status of the `Cluster` CR to check how far along the installion is.
 
 You'll then need to [add a storage class to the workload cluster](../../../operations/storage/adding-a-storage-class.md#adding-a-block-storage-class).
+
+When the deployment is ready, continue with [Accessing Superphenix](../../../operations/accessing-superphenix.md) to open the console and monitor applications in Argo CD.

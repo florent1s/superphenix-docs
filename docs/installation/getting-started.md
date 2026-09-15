@@ -14,6 +14,9 @@ Run every command from a **bootstrap host** that can reach the nodes (typically 
     !!! tip "No DNS?"
         Use **[nip.io](https://nip.io)** against an internal node IP, for example `console.192.168.1.10.nip.io`.
 
+    !!! warning "NAT gateway traffic to a node"
+        Due to a macvlan limitation, traffic from a NAT gateway is blackholed when its destination is an address on the node hosting that gateway. VMs and Kubernetes as a Service clusters can therefore lose access to the console or control plane when DNS points directly to a node. Put a load balancer in front of the nodes and point DNS to the load balancer. See [Limitations](../operations/limitations.md#nat-gateway-traffic-to-its-host-node) for details and an alternative workaround.
+
 ## 1. Install Talos
 
 Boot the nodes with the [Talos getting started](https://talos.dev/v1.11/introduction/getting-started) guide, then generate configs:
@@ -184,7 +187,7 @@ helm install superphenix-operator \
   -f values.yaml
 ```
 
-When the stack is healthy, open the console at your domain.
+When the stack is healthy, continue with [Accessing Superphenix](../operations/accessing-superphenix.md) to open the console, retrieve the initial Argo CD password, and monitor application synchronization.
 
 ???+ note "Override Kube-OVN CIDRs"
     If your **node subnet overlaps** Kube-OVN defaults (pods `10.0.0.0/12`, services `10.16.0.0/12`, join `100.64.0.0/12`, isolated egress `10.32.0.0/16`), pick a different  node range or override `clusters.local.systemConfiguration.apps.kubeovn.values.networking`. A `192.168.1.0/24` lab does not conflict.

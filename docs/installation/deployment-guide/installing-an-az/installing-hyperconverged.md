@@ -53,5 +53,6 @@ See [Configure a cluster](configuring-a-cluster.md) for the full field reference
 
 ## Related
 
+- [Accessing Superphenix](../../../operations/accessing-superphenix.md): open the console and monitor the deployment in Argo CD.
 - [Installing an AZ](index.md): overview of AZ installation paths.
 - [Deployment topology](../../../architecture/deployment-topology.md): fully integrated vs other deployment types.
