@@ -2,7 +2,7 @@
 
 ## Node subnets
 
-Worker nodes need to talk to each other and therefore need at least one shared subnet between all node groups. You can than add more subnets to certain node groups depending on your needs.
+Worker nodes need to talk to each other and therefore need at least one shared subnet between all node groups. You can then add more subnets to certain node groups depending on your needs.
 
 ???+ note "Internal cluster CIDRs"
     By default KaaS clusters use the following IP ranges:
@@ -25,6 +25,9 @@ This chapter details those default policies and explains how you can configure t
 
 #### Nodes
 
+???+ note "Public node exposure"
+    Your nodes are not exposed publicly by default no matter which policies you select, you need to configure DNAT in your EIP settings to achieve this.
+
 **Default ingress rule**
 
 | Allowed sources | Ports | Comment |
@@ -33,10 +36,10 @@ This chapter details those default policies and explains how you can configure t
 
 **Strict ingress rule**
 
-| Allowed sources                 | Ports   | Comment |
-|---------------------------------|---------|---------|
-| Other nodes of the same cluster | Any     |         |
-| Any                             | 80, 443 | HTTP/S  |
+| Allowed sources                 | Ports   | Comment                         |
+|---------------------------------|---------|---------------------------------|
+| Other nodes of the same cluster | Any     | Internal cluster communications |
+| Any                             | 80, 443 | HTTP/S                          |
 
 **Default egress rule**
 
@@ -46,12 +49,12 @@ This chapter details those default policies and explains how you can configure t
 
 **Strict egress rule**
 
-| Allowed destinations            | Ports            | Comment      |
-|---------------------------------|------------------|--------------|
-| Other nodes of the same cluster | Any              |              |
-| Any                             | 53               | DNS          |
-| Any                             | 80, 443          | HTTP/S       |
-| Any                             | 7442, 7443, 7444 | Controlplane |
+| Allowed destinations            | Ports            | Comment                         |
+|---------------------------------|------------------|---------------------------------|
+| Other nodes of the same cluster | Any              | Internal cluster communications |
+| Any                             | 53               | DNS                             |
+| Any                             | 80, 443          | HTTP/S                          |
+| Any                             | 7442, 7443, 7444 | Controlplane                    |
 
 #### Controlplane
 
