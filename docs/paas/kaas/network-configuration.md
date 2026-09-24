@@ -41,6 +41,12 @@ This chapter details those default policies and explains how you can configure t
 | Other nodes of the same cluster | Any     | Internal cluster communications |
 | Any                             | 80, 443 | HTTP/S                          |
 
+**None ingress rule**
+
+| Allowed sources                 | Ports   | Comment                         |
+|---------------------------------|---------|---------------------------------|
+| Other nodes of the same cluster | Any     | Internal cluster communications |
+
 **Default egress rule**
 
 | Allowed destinations | Ports | Comment |
@@ -52,9 +58,19 @@ This chapter details those default policies and explains how you can configure t
 | Allowed destinations            | Ports            | Comment                         |
 |---------------------------------|------------------|---------------------------------|
 | Other nodes of the same cluster | Any              | Internal cluster communications |
-| Any                             | 53               | DNS                             |
-| Any                             | 80, 443          | HTTP/S                          |
+| Any                             | 53, 53/UDP       | DNS                             |
+| Any                             | 80, 443          | HTTP/S (used to pull images)    |
 | Any                             | 7442, 7443, 7444 | Controlplane                    |
+
+**None egress rule**
+
+| Allowed destinations            | Ports            | Comment                         |
+|---------------------------------|------------------|---------------------------------|
+| Other nodes of the same cluster | Any              | Internal cluster communications |
+
+???+ note "Node requirements"
+    With this preset workers nodes will be unable to make essential communications and will therefor not join the cluster.
+    Take a look at the **strict** preset to get an idea of what is required.
 
 #### Controlplane
 
@@ -119,3 +135,25 @@ You can also supplement those default rules by creating your own security groups
   cluster.x-k8s.io/cluster-name: <SPXID of your cluster> # Recommended as <poolName> might be used by other clusters in the same project
   superphenix.net/vmPool: <poolName>
   ```
+???+ note "Restraining public node ingress"
+    If you want to limit public access to your nodes to certain port or IP ranges, make sure that you do not have a rule that allows all ingress from your subnet, as this would also
+    allow incoming (public) connections forwarded by the NAT gateway.  
+    If you need such a subnet wide ingress rule to accomodate your other security groups, exclude the NAT gateway's IP (should be the last IP of your chosen range) from the allowed sources.
+
+    === "Console"
+
+        1. Open your **Security group** modification page.
+        2. Access the **Ingress** tab.
+        3. Edit the subnet wide allow rule and under **From → IP Block → Exception**, add your NAT gateway's IP.
+        4. Navigate to the last tab and apply your changes.
+
+    === "Gitops"
+
+        ```yaml
+        - from:
+          - ipBlock:
+            cidr: 10.75.85.0/24
+            # add the following to exclude connections coming through the NAT gateway, allowing your other rules to take effect
+            except:
+            - 10.75.85.254/32
+        ```
